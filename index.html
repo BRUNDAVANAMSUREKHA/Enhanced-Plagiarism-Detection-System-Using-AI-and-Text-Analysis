@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enhanced Plagiarism Checker</title>
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2ecc71;
+      --background-color: #1c2833;
+      --text-color: #f4f6f7;
+      --card-bg: #2c3e50;
+      --border-radius: 12px;
+      --plagiarized-color: #e74c3c;
+      --original-color: #2ecc71;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      padding: 20px 0;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      margin: 0;
+    }
+
+    /* Header title hover effect */
+    .header h1:hover {
+      color: var(--primary-color);
+      transition: color 0.3s ease;
+    }
+
+    .input-wrapper {
+      border: 2px solid var(--primary-color);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      margin-bottom: 40px;
+    }
+
+    .input-tabs {
+      display: flex;
+      border-bottom: 2px solid var(--primary-color);
+    }
+
+    .input-tab {
+      flex: 1;
+      padding: 15px;
+      text-align: center;
+      background-color: var(--card-bg);
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    /* Input tab hover effects */
+    .input-tab {
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      transition: all 0.3s ease;
+    }
+
+    .input-tab:hover:not(.active) {
+      background-color: var(--text-color);
+      color: var(--primary-color);
+    }
+
+    .input-tab.active {
+      background-color: var(--primary-color);
+    }
+
+    .input-content {
+      padding: 20px;
+      background-color: var(--card-bg);
+      min-height: 300px;
+      display: flex;
+    }
+
+    .input-section-container {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .text-section, .upload-section {
+      flex: 1;
+      transition: all 0.5s ease-in-out;
+      opacity: 0;
+      position: absolute;
+      width: 100%;
+      transform: translateX(100%);
+    }
+
+    .text-section.active, .upload-section.active {
+      display: block;
+      opacity: 1;
+      position: relative;
+      transform: translateX(0);
+    }
+
+    .text-area {
+      width: 100%;
+      min-height: 250px;
+      max-height: 500px; /* Added max-height */
+      padding: 15px;
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      font-size: 16px;
+      resize: vertical;
+      overflow-y: auto; /* Ensure scrollbar appears */
+    }
+
+    .uploaded-content {
+      width: 100%;
+      min-height: 250px;
+      max-height: 500px; /* Added max-height */
+      padding: 15px;
+      margin-top: 15px;
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      font-size: 16px;
+      white-space: pre-wrap;
+      display: none;
+      overflow-y: auto; /* Enable vertical scrolling */
+      scrollbar-width: thin; /* For Firefox */
+      scrollbar-color: var(--primary-color) var(--card-bg); /* For Firefox */
+    }
+
+    /* Custom scrollbar styling for WebKit browsers (Chrome, Safari, Edge) */
+    .uploaded-content::-webkit-scrollbar,
+    .text-area::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .uploaded-content::-webkit-scrollbar-track,
+    .text-area::-webkit-scrollbar-track {
+      background: var(--card-bg);
+      border-radius: 4px;
+    }
+
+    .uploaded-content::-webkit-scrollbar-thumb,
+    .text-area::-webkit-scrollbar-thumb {
+      background-color: var(--primary-color);
+      border-radius: 4px;
+      border: 2px solid var(--card-bg);
+    }
+
+    .uploaded-content::-webkit-scrollbar-thumb:hover,
+    .text-area::-webkit-scrollbar-thumb:hover {
+      background-color: var(--secondary-color);
+    }
+
+    .upload-zone {
+      border: 2px dashed rgba(255,255,255,0.3);
+      border-radius: 8px;
+      padding: 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
+
+    /* Upload zone hover effects */
+    .upload-zone {
+      border: 2px dashed rgba(255,255,255,0.3);
+      transition: all 0.3s ease;
+    }
+
+    .upload-zone:hover {
+      color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+
+    .upload-zone p {
+      margin: 10px 0;
+      color: rgba(255,255,255,0.7);
+    }
+
+    #file-upload {
+      display: none;
+    }
+
+    .file-info {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: rgba(52, 152, 219, 0.1);
+      border-radius: 6px;
+      display: none;
+    }
+
+    .file-info.active {
+      display: block;
+    }
+
+    .uploaded-content {
+      width: 100%;
+      min-height: 250px;
+      padding: 15px;
+      margin-top: 15px;
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      font-size: 16px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      display: none;
+    }
+
+    /* Clear button hover effects */
+    .clear-btn {
+      background-color: transparent;
+      border: 2px solid var(--primary-color);
+      color: var(--text-color);
+      transition: all 0.3s ease;
+    }
+
+    .clear-btn:hover {
+      background-color: var(--text-color);
+      color: var(--primary-color);
+    }
+
+    /* Button hover effects */
+    .btn {
+      background-color: var(--primary-color);
+      color: var(--text-color);
+      border: 2px solid var(--primary-color);
+      transition: all 0.3s ease;
+      padding: 12px 24px;
+      border-radius: var(--border-radius);
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .btn:hover {
+      background-color: var(--text-color);
+      color: var(--primary-color);
+      transform: translateY(-2px);
+    }
+
+    .results-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        position: relative;
+        align-items: stretch;
+    }
+
+    .results-grid > div {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Card heading hover effects */
+    .card-heading {
+      background-color: var(--primary-color);
+      color: var(--text-color);
+      transition: all 0.3s ease;
+      padding: 15px;
+      border-radius: 50px;
+      text-align: center;
+      max-width: 250px;
+      margin: 0 auto 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      position: relative;
+      z-index: 10;
+    }
+
+    .card-heading:hover {
+      background-color: var(--text-color);
+      color: var(--primary-color);
+      box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+    }
+
+    /* Result card hover effects */
+    .result-card {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 25px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .result-card:hover {
+      transform: scale(0.95);
+      border-color: var(--primary-color);
+      box-shadow: 0 15px 30px rgba(52, 152, 219, 0.2);
+    }
+
+    .circular-progress {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: conic-gradient(var(--original-color) 0%, var(--original-color) 0%, var(--plagiarized-color) 0%, var(--plagiarized-color) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 20px auto;
+    }
+
+    .circular-progress::before {
+      content: '';
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      background-color: var(--card-bg);
+      border-radius: 50%;
+    }
+
+    .progress-value {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+
+    .progress-value h3 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .progress-value span {
+      font-size: 2rem;
+      font-weight: 600;
+    }
+
+    .progress-details {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+      gap: 20px;
+    }
+
+    #source-analysis, #basic-details {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .source-references {
+      flex-grow: 1;
+      min-height: 200px;
+    }
+
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .detail-item::before {
+      content: '';
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+    }
+
+    .original-detail::before {
+      background-color: var(--original-color);
+    }
+
+    .plagiarized-detail::before {
+      background-color: var(--plagiarized-color);
+    }
+
+    .source-references {
+      background-color: rgba(52, 152, 219, 0.1);
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 15px;
+    }
+
+    .source-item {
+      margin-bottom: 10px;
+      padding: 10px;
+      background-color: rgba(255,255,255,0.05);
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .source-item .match-percentage {
+      font-weight: bold;
+      color: var(--plagiarized-color);
+    }
+
+    .similarity-indicator {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .similarity-bar {
+      flex-grow: 1;
+      height: 10px;
+      background: linear-gradient(to right, var(--original-color), var(--plagiarized-color));
+      border-radius: 5px;
+      margin-left: 10px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-50px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .card-heading {
+      animation: slideIn 0.6s ease-out;
+    }
+
+    .result-card {
+      animation: fadeIn 0.8s ease-out;
+      transform-origin: center top;
+    }
+
+    .result-card:nth-child(1) { animation-delay: 0.2s; }
+    .result-card:nth-child(2) { animation-delay: 0.4s; }
+    .result-card:nth-child(3) { animation-delay: 0.6s; }
+
+    @media (max-width: 768px) {
+      .input-tabs {
+        flex-direction: column;
+      }
+      
+      .input-content {
+        flex-direction: column;
+      }
+    }
+        #basic-details {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding: 20px;
+      background-color: rgba(52, 152, 219, 0.05);
+      border-radius: var(--border-radius);
+    }
+
+    #basic-details p {
+      margin: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      background-color: rgba(255,255,255,0.05);
+      border-radius: 8px;
+    }
+
+    #top-words {
+      margin-top: 15px;
+      background-color: rgba(46, 204, 113, 0.1);
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    #top-words p:first-child {
+      color: var(--secondary-color);
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      #basic-details p {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>Plagiarism Checker</h1>
+    </header>
+
+    <div class="input-wrapper">
+      <div class="input-tabs">
+        <div class="input-tab active" data-tab="text">Text Input</div>
+        <div class="input-tab" data-tab="upload">Upload Document</div>
+      </div>
+      
+      <div class="input-content input-section-container">
+        <div class="text-section active">
+          <textarea class="text-area" placeholder="Enter your text here..."></textarea>
+          <button class="btn" id="analyze-text-btn">Analyze Text</button>
+        </div>
+        
+        <div class="upload-section">
+          <div class="upload-zone" id="drop-zone">
+            <p>Click to upload or drag and drop</p>
+            <p>Supported formats: .docx, .pdf, .txt</p>
+            <input type="file" id="file-upload" accept=".docx, .pdf, .txt">
+          </div>
+          <div class="file-info">
+            <span id="file-name"></span>
+            <button class="clear-btn" id="clear-file">Clear</button>
+          </div>
+          <div class="uploaded-content" id="file-content"></div>
+          <button class="btn" id="analyze-file-btn">Analyze Document</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="results-grid">
+      <div>
+        <div class="card-heading">Plagiarism Score</div>
+        <div class="result-card">
+          <div class="circular-progress" id="plagiarism-progress">
+            <div class="progress-value">
+              <h3>Plagiarism</h3>
+              <span id="plagiarism-percentage">0%</span>
+            </div>
+          </div>
+          <div class="progress-details">
+            <div class="detail-item original-detail">
+              Original Content
+            </div>
+            <div class="detail-item plagiarized-detail">
+              Plagiarized Content
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div>
+        <div class="card-heading">Potential Matches & Sources</div>
+        <div class="result-card">
+          <div id="source-analysis">
+            <div class="similarity-indicator">
+              <span>Similarity Level</span>
+              <div class="similarity-bar"></div>
+            </div>
+            <div class="source-references" id="potential-sources">
+              <!-- Dynamically populated sources will go here -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card-heading">Document Statistics</div>
+        <div class="result-card">
+          <div id="basic-details"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="js/plagiarismDetector.js"></script> 
+  <script src="js/app.js"></script>
+</body>
+</html>
