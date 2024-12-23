@@ -11,10 +11,7 @@ This project aims to provide a robust, real-time solution for identifying copied
 
 Here is a demonstration video showing how the project works:
 
-<video width="640" height="360" controls>
-  <source src="[Watch Video](https://github.com/BRUNDAVANAMSUREKHA/Enhanced-Plagiarism-Detection-System-Using-AI-and-Text-Analysis/raw/main/Enhanced%20Plagiarism%20Checker.mp4)" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+[![Watch Video](![image](https://github.com/user-attachments/assets/0c9892a8-a21d-496b-85db-fb712935fe1b))](https://youtu.be/mqtCBBermhM)
 
 ---
 
