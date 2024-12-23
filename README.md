@@ -12,7 +12,7 @@ This project aims to provide a robust, real-time solution for identifying copied
 Here is a demonstration video showing how the project works:
 
 <video width="640" height="360" controls>
-  <source src="video.mp4" type="video/mp4">
+  <source src="[video.mp4](https://github.com/BRUNDAVANAMSUREKHA/Enhanced-Plagiarism-Detection-System-Using-AI-and-Text-Analysis/blob/main/Enhanced%20Plagiarism%20Checker.mp4)" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
