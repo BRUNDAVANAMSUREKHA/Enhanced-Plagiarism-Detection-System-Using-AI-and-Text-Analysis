@@ -7,6 +7,17 @@ This project aims to provide a robust, real-time solution for identifying copied
 
 ---
 
+### Video Example
+
+Here is a demonstration video showing how the project works:
+
+<video width="640" height="360" controls>
+  <source src="video.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+---
+
 ## Features
 - **Hybrid Detection Framework**: Utilizes both AI-based semantic analysis and statistical algorithms for enhanced detection.
 - **Multi-Format Support**: Compatible with `.txt`, `.docx`, and `.pdf` files.
@@ -58,5 +69,3 @@ The system is designed to:
 1. **Detect Plagiarism Accurately**: Identify both exact matches and paraphrased content.
 2. **Enhance Originality Assessment**: Offer insights into text quality, readability, and style.
 3. **Improve Workflow**: Deliver real-time analysis and actionable feedback to support document revision.
-
----
