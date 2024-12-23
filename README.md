@@ -7,14 +7,6 @@ This project aims to provide a robust, real-time solution for identifying copied
 
 ---
 
-### Video Example
-
-Here is a demonstration video showing how the project works:
-
-[![Watch Video](![image](https://github.com/user-attachments/assets/0c9892a8-a21d-496b-85db-fb712935fe1b))](https://youtu.be/mqtCBBermhM)
-
----
-
 ## Features
 - **Hybrid Detection Framework**: Utilizes both AI-based semantic analysis and statistical algorithms for enhanced detection.
 - **Multi-Format Support**: Compatible with `.txt`, `.docx`, and `.pdf` files.
